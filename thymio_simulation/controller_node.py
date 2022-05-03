@@ -1,7 +1,5 @@
-from enum import Enum
 import rclpy
 from rclpy.node import Node
-import tf_transformations
 
 from geometry_msgs.msg import Twist, Pose
 from nav_msgs.msg import Odometry
@@ -11,9 +9,9 @@ import sys
 import math
 import time
 
-class States(Enum):
-    FIRST_HALF = 0
-    SECOND_HALF = 1
+from .states import ThymioStates
+from utils import *
+
 
 class ControllerNode(Node):
     def __init__(self):
@@ -29,7 +27,7 @@ class ControllerNode(Node):
         # Create a subscriber to the topic 'odom', which will call 
         # self.odom_callback every time a message is received
         self.odom_subscriber = self.create_subscription(Odometry, 'odom', self.odom_callback, 10)
-        self.state = States.FIRST_HALF
+        self.state = ThymioStates.FIRST_HALF
         self.counter = 0
         self.pose2d = None
         self.step = 0
@@ -60,24 +58,6 @@ class ControllerNode(Node):
         #     "odometry: received pose (x: {:.2f}, y: {:.2f}, theta: {:.2f})".format(*self.pose2d),
         #      throttle_duration_sec=0.5 # Throttle logging frequency to max 2Hz
         # )
-    
-    def pose3d_to_2d(self, pose3):
-        quaternion = (
-            pose3.orientation.x,
-            pose3.orientation.y,
-            pose3.orientation.z,
-            pose3.orientation.w
-        )
-        
-        roll, pitch, yaw = tf_transformations.euler_from_quaternion(quaternion)
-        
-        pose2 = (
-            pose3.position.x,  # x position
-            pose3.position.y,  # y position
-            yaw                # theta orientation
-        )
-        
-        return pose2
         
     def update_callback(self):
         # Let's just set some hard-coded velocities in this example
@@ -96,19 +76,19 @@ class ControllerNode(Node):
 
         self.get_logger().info(f'Step: {self.step}', throttle_duration_sec=1)
 
-        if self.state == States.FIRST_HALF:
+        if self.state == ThymioStates.FIRST_HALF:
             cmd_vel.linear.x  = 0.05 # [m/s]
             cmd_vel.angular.z = math.pi / 8 # [rad/s]
             time_elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
             if int(time_elapsed) >= 16 * 1.25:
-                self.state = States.SECOND_HALF
+                self.state = ThymioStates.SECOND_HALF
                 self.start_time = self.get_clock().now()
-        elif self.state == States.SECOND_HALF:
+        elif self.state == ThymioStates.SECOND_HALF:
             cmd_vel.linear.x  = 0.05
             cmd_vel.angular.z = -math.pi / 9
             time_elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
             if int(time_elapsed) >= 18 * 1.25:
-                self.state = States.FIRST_HALF
+                self.state = ThymioStates.FIRST_HALF
                 self.step = 0
                 self.start_time = self.get_clock().now()
         
