@@ -80,7 +80,7 @@ class ControllerNode(Node):
             cmd_vel.linear.x = 0.1  # [m/s]
             cmd_vel.angular.z = math.pi / 8  # [rad/s]
             time_elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
-            if int(time_elapsed) >= 16 * 1.2779:
+            if int(time_elapsed) >= 16 * 1.27822:
                 self.state = ThymioStates.SECOND_HALF
                 self.start_time = self.get_clock().now()
         elif self.state == ThymioStates.SECOND_HALF:
@@ -88,7 +88,7 @@ class ControllerNode(Node):
             # Since the two circumferences of an 8 are not exactly equal, change the angular velocity slightly
             cmd_vel.angular.z = -math.pi / 9
             time_elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
-            if int(time_elapsed) >= 18 * 1.2779:
+            if int(time_elapsed) >= 18 * 1.27822:
                 self.state = ThymioStates.FIRST_HALF
                 self.step = 0
                 self.start_time = self.get_clock().now()
