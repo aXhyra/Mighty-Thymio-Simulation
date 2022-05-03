@@ -14,10 +14,6 @@ import time
 class States(Enum):
     FIRST_HALF = 0
     SECOND_HALF = 1
-    # STARTING_FIRST_HALF = 0
-    # FIRST_HALF = 1
-    # STARTING_SECOND_HALF = 2
-    # SECOND_HALF = 3
 
 class ControllerNode(Node):
     def __init__(self):
