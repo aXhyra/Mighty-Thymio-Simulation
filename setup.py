@@ -1,7 +1,7 @@
 from setuptools import setup
 from glob import glob
 
-package_name = 'thymio_example'
+package_name = 'thymio_simulation'
 
 setup(
     name=package_name,
@@ -18,14 +18,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='usi',
-    maintainer_email='usi@todo.todo',
+    maintainer=['Alind Xhyra', 'Federico Pallotti'],
+    maintainer_email='alind.xhyra@usi.ch',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'controller_node = thymio_example.controller_node:main'
+            'controller_node = thymio_simulation.controller_node:main'
         ],
     },
 )
