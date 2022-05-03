@@ -2,11 +2,13 @@ from setuptools import setup
 from glob import glob
 
 package_name = 'thymio_simulation'
+controllers = f'{package_name}.controllers'
+utils = f'{package_name}.utils'
 
 setup(
     name=package_name,
     version='0.0.0',
-    packages=[package_name],
+    packages=[package_name, controllers, utils],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
