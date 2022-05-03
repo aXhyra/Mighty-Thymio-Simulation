@@ -13,7 +13,7 @@ from .states import ThymioStates
 from .utils import *
 
 
-class ControllerNode(Node):
+class Node8Trajectory(Node):
     def __init__(self):
         super().__init__('controller_node')
 
@@ -102,7 +102,7 @@ def main():
     rclpy.init(args=sys.argv)
 
     # Create an instance of your node class
-    node = ControllerNode()
+    node = Node8Trajectory()
     node.start()
 
     # Keep processing events until someone manually shuts down the node

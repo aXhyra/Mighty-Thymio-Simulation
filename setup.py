@@ -8,7 +8,7 @@ utils = f'{package_name}.utils'
 setup(
     name=package_name,
     version='0.0.0',
-    packages=[package_name, controllers, utils],
+    packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -27,7 +27,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'node_8_trajectory = thymio_simulation.node_8_trajectory:main'
+            'node_8_trajectory = thymio_simulation.node_8_trajectory:main',
+            'node_points_2_3 = thymio_simulation.node_points_2_3:main'
         ],
     },
 )
