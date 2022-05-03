@@ -22,7 +22,7 @@ def generate_launch_description():
         
         # Start a ROS node, equivalent to ros2 run <package_name> <executable_name>
         Node(
-            package='thymio_simualtion',
+            package='thymio_simulation',
             executable='controller_node',
             
             # Launch controller_node in the namespace defined by the thymio_name

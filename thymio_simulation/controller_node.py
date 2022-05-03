@@ -42,7 +42,7 @@ class ControllerNode(Node):
         
     def start(self):
         # Create and immediately start a timer that will regularly publish commands
-        self.timer = self.create_timer(1/30, self.update_callback)
+        self.timer = self.create_timer(1/60, self.update_callback)
     
     def stop(self):
         # Set all velocities to zero
@@ -92,51 +92,25 @@ class ControllerNode(Node):
         self.step += 1
         
         time_elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
-        self.get_logger().info(f'Time elapsed: {time_elapsed}',
-        throttle_duration_sec=0.5)
+        # self.get_logger().info(f'Time elapsed: {time_elapsed}', throttle_duration_sec=0.5)
+
+        self.get_logger().info(f'Step: {self.step}', throttle_duration_sec=1)
 
         if self.state == States.FIRST_HALF:
             cmd_vel.linear.x  = 0.05 # [m/s]
             cmd_vel.angular.z = math.pi / 8 # [rad/s]
             time_elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
-            if int(time_elapsed) >= 16:
+            if int(time_elapsed) >= 16 * 1.25:
                 self.state = States.SECOND_HALF
                 self.start_time = self.get_clock().now()
         elif self.state == States.SECOND_HALF:
             cmd_vel.linear.x  = 0.05
             cmd_vel.angular.z = -math.pi / 9
             time_elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
-            if int(time_elapsed) >= 18:
+            if int(time_elapsed) >= 18 * 1.25:
                 self.state = States.FIRST_HALF
                 self.step = 0
                 self.start_time = self.get_clock().now()
-        
-
-        # if self.state == States.STARTING_FIRST_HALF:
-        #     self.counter += 1
-        #     if self.counter > 200:
-        #         self.state = States.FIRST_HALF
-        #         self.counter = 0
-        # if self.state == States.FIRST_HALF or self.state == States.STARTING_FIRST_HALF:
-        #     cmd_vel.linear.x  = 0.5 # [m/s]
-        #     cmd_vel.angular.z = math.pi / 2 # [rad/s]
-        #     if self.state == States.FIRST_HALF:
-        #         if math.sqrt((self.pose2d[0] - origin[0])**2 + (self.pose2d[1] - origin[1])**2) <= 0.01:
-        #             self.state = States.STARTING_SECOND_HALF
-        #             self.counter = 0
-
-        # if self.state == States.STARTING_SECOND_HALF:
-        #     self.counter += 1
-        #     if self.counter > 200:
-        #         self.state = States.SECOND_HALF
-        #         self.counter = 0
-        # if self.state == States.SECOND_HALF or self.state == States.STARTING_SECOND_HALF:
-        #     cmd_vel.linear.x  = 0.5
-        #     cmd_vel.angular.z = -math.pi / 3
-        #     if self.state == States.SECOND_HALF:
-        #         if math.sqrt((self.pose2d[0] - origin[0])**2 + (self.pose2d[1] - origin[1])**2) <= 0.01:
-        #             self.state = States.STARTING_FIRST_HALF
-        #             self.counter = 0
         
         # Publish the command
         self.vel_publisher.publish(cmd_vel)
