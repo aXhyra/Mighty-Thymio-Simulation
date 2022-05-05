@@ -63,6 +63,9 @@ To launch the second bonus task:
 [![](https://drive.switch.ch/index.php/apps/files_sharing/ajax/publicpreview.php?x=3840&y=1314&a=true&file=Bonus_2_snapshot.png&t=5Ooamo4WmTMWXTk&scalingup=0)](https://drive.switch.ch/index.php/s/fjd19jmIipBpbse)
 
 # Other info
+Noise data from thymio's proximity sensors has been handled by using a rolling average of the last 3 measurements.
+
+The scripts folder containes scripts to quickly source and run the launch files for each point.
 
 
 ## Link to switch drive folder containing the simulation videos
