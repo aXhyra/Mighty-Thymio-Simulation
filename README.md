@@ -13,7 +13,7 @@ To launch the first task:
 * Open coppeliasim
 * Load scene 8.ttt from the scenes folder
 * Start simulation
-* Launch bridge with `bash scripts/start_bridge.sh`
+* Launch bridge with `bash scripts/start_bridge.sh single:=True`
 * Run `source ~/dev_ws/install/setup.bash`
 * Start simulation with `ros2 launch thymio_simulation task_1.launch.py thymio_name:=thymio_0`
 
@@ -25,7 +25,7 @@ To launch the second task:
 * Open coppeliasim
 * Load scene wall.ttt from the scenes folder
 * Start simulation
-* Launch bridge with `bash scripts/start_bridge.sh`
+* Launch bridge with `bash scripts/start_bridge.sh single:=True`
 * Run `source ~/dev_ws/install/setup.bash`
 * Start simulation with `ros2 launch thymio_simulation task_2.launch.py thymio_name:=thymio_0`
 
@@ -37,7 +37,7 @@ To launch the third (compulsory) task:
 * Open coppeliasim
 * Load scene wall.ttt from the scenes folder
 * Start simulation
-* Launch bridge with `bash scripts/start_bridge.sh`
+* Launch bridge with `bash scripts/start_bridge.sh single:=True`
 * Run `source ~/dev_ws/install/setup.bash`
 * Start simulation with `ros2 launch thymio_simulation compulsory.launch.py thymio_name:=thymio_0`
 
@@ -49,7 +49,7 @@ To launch the first bonus task:
 * Open coppeliasim
 * Load scene awai.ttt from the scenes folder
 * Start simulation
-* Launch bridge with `bash scripts/start_bridge.sh`
+* Launch bridge with `bash scripts/start_bridge.sh single:=True`
 * Run `source ~/dev_ws/install/setup.bash`
 * Start simulation with `ros2 launch thymio_simulation awai.launch.py thymio_name:=thymio_0`
 
