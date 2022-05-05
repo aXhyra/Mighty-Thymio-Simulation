@@ -5,7 +5,7 @@
 # How to launch Task 1
 To launch the first task:
 * Open coppeliasim
-* Load scene 8.ttt from scene folder
+* Load scene 8.ttt from scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -17,7 +17,7 @@ To launch the first task:
 # How to launch Task 2
 To launch the second task:
 * Open coppeliasim
-* Load scene 8.ttt from scene folder
+* Load scene wall.ttt from scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -29,7 +29,7 @@ To launch the second task:
 # How to launch Task 3
 To launch the third (compulsory) task:
 * Open coppeliasim
-* Load scene 8.ttt from scene folder
+* Load scene wall.ttt from scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -41,7 +41,7 @@ To launch the third (compulsory) task:
 # How to launch Bonus 1
 To launch the first bonus task:
 * Open coppeliasim
-* Load scene 8.ttt from scene folder
+* Load scene awai.ttt from scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -53,7 +53,7 @@ To launch the first bonus task:
 # How to launch Bonus 2
 To launch the second bonus task:
 * Open coppeliasim
-* Load scene 8.ttt from scene folder
+* Load scene bonus.ttt from scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh single:=False`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -63,7 +63,7 @@ To launch the second bonus task:
 [![](https://drive.switch.ch/index.php/apps/files_sharing/ajax/publicpreview.php?x=3840&y=1314&a=true&file=Bonus_2_snapshot.png&t=5Ooamo4WmTMWXTk&scalingup=0)](https://drive.switch.ch/index.php/s/fjd19jmIipBpbse)
 
 # Other info
-T
+
 
 ## Link to switch drive folder containing the simulation videos
 https://drive.switch.ch/index.php/s/A28TJbkiR2SMahK
