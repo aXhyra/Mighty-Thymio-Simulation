@@ -11,7 +11,7 @@
 # How to launch Task 1
 To launch the first task:
 * Open coppeliasim
-* Load scene 8.ttt from the downloaded scenes folder
+* Load scene 8.ttt from the scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -23,7 +23,7 @@ To launch the first task:
 # How to launch Task 2
 To launch the second task:
 * Open coppeliasim
-* Load scene wall.ttt from the downloaded scenes folder
+* Load scene wall.ttt from the scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -35,7 +35,7 @@ To launch the second task:
 # How to launch Task 3
 To launch the third (compulsory) task:
 * Open coppeliasim
-* Load scene wall.ttt from the downloaded scenes folder
+* Load scene wall.ttt from the scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -47,7 +47,7 @@ To launch the third (compulsory) task:
 # How to launch Bonus 1
 To launch the first bonus task:
 * Open coppeliasim
-* Load scene awai.ttt from the downloaded scenes folder
+* Load scene awai.ttt from the scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh`
 * Run `source ~/dev_ws/install/setup.bash`
@@ -59,7 +59,7 @@ To launch the first bonus task:
 # How to launch Bonus 2
 To launch the second bonus task:
 * Open coppeliasim
-* Load scene bonus.ttt from the downloaded scenes folder
+* Load scene bonus.ttt from the scenes folder
 * Start simulation
 * Launch bridge with `bash scripts/start_bridge.sh single:=False`
 * Run `source ~/dev_ws/install/setup.bash`
