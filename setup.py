@@ -28,7 +28,8 @@ setup(
     entry_points={
         'console_scripts': [
             'node_8_trajectory = thymio_simulation.node_8_trajectory:main',
-            'node_points_2_3 = thymio_simulation.node_points_2_3:main'
+            'node_points_2_3 = thymio_simulation.node_points_2_3:main',
+            'awai = thymio_simulation.awai:main'
         ],
     },
 )

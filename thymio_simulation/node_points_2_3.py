@@ -1,27 +1,18 @@
 import rclpy
 from rclpy.node import Node
 
-from geometry_msgs.msg import Twist, Pose
+from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Range
 import numpy as np
-import copy
 
 import sys
 import math
-import time
 
-from .states import ThymioWallStates
 from .utils import *
 from .controllers import ProportionalController
 
 MAX = 0.15
-
-
-def normalize(value, min_value, max_value):
-    if value < min_value:
-        return min_value
-    return 1 - ((value - min_value) / (max_value - min_value))
 
 
 class ControllerNode(Node):
@@ -44,6 +35,18 @@ class ControllerNode(Node):
         self.prox_cr = None
         self.prox_r = None
 
+        self.prox_l_buf = np.zeros(3)
+        self.prox_cl_buf = np.zeros(3)
+        self.prox_c_buf = np.zeros(3)
+        self.prox_cr_buf = np.zeros(3)
+        self.prox_r_buf = np.zeros(3)
+
+        self.prox_l_buf_idx = 0
+        self.prox_cl_buf_idx = 0
+        self.prox_c_buf_idx = 0
+        self.prox_cr_buf_idx = 0
+        self.prox_r_buf_idx = 0
+
         # back sensors:
         self.prox_rl = None
         self.prox_rr = None
@@ -54,7 +57,9 @@ class ControllerNode(Node):
         self.prox_rl_buf_idx = 0
         self.prox_rr_buf_idx = 0
 
-        self.proportional_controller = ProportionalController(2)
+        self.proportional_controller = ProportionalController(5)
+
+        self.do_task = None
 
         # Create a publisher for the topic 'cmd_vel'
         self.vel_publisher = self.create_publisher(Twist, 'cmd_vel', 10)
@@ -117,6 +122,7 @@ class ControllerNode(Node):
     def start(self):
         # Create and immediately start a timer that will regularly publish commands
         self.timer = self.create_timer(1 / 60, self.update_callback)
+        self.declare_parameter('task', 2)
 
     def stop(self):
         # Set all velocities to zero
@@ -135,7 +141,10 @@ class ControllerNode(Node):
         # )
 
     def proximity_l(self, msg):
-        self.prox_l = normalize(msg.range, 0, MAX)
+        self.prox_l_buf[self.prox_l_buf_idx] = normalize(msg.range, 0, MAX)
+        self.prox_l_buf_idx = (self.prox_r_buf_idx + 1) % self.prox_l_buf.shape[0]
+
+        self.prox_l = np.mean(self.prox_l_buf)
         # self.get_logger().info("proximity/left: received distance {:.2f}".format(self.prox_l),
         #                        throttle_duration_sec=0.5)
         if self.state == ThymioWallStates.NO_WALL and self.prox_l > 0.7:
@@ -144,7 +153,10 @@ class ControllerNode(Node):
             self.state = ThymioWallStates.WALL_L
 
     def proximity_cl(self, msg):
-        self.prox_cl = normalize(msg.range, 0, MAX)
+        self.prox_cl_buf[self.prox_cl_buf_idx] = normalize(msg.range, 0, MAX)
+        self.prox_cl_buf_idx = (self.prox_cl_buf_idx + 1) % self.prox_cl_buf.shape[0]
+
+        self.prox_cl = np.mean(self.prox_cl_buf)
         # self.get_logger().info("proximity/center_left: received distance {:.2f}".format(self.prox_cl),
         #                        throttle_duration_sec=0.5)
         if self.state == ThymioWallStates.NO_WALL and self.prox_cl > 0.7:
@@ -155,10 +167,16 @@ class ControllerNode(Node):
     def proximity_c(self, msg):
         # self.get_logger().info("proximity/center: received distance {:.2f}".format(normalize(msg.range, 0, MAX)),
         #                        throttle_duration_sec=0.5)
-        self.prox_c = normalize(msg.range, 0, MAX)
+        self.prox_c_buf[self.prox_c_buf_idx] = normalize(msg.range, 0, MAX)
+        self.prox_c_buf_idx = (self.prox_c_buf_idx + 1) % self.prox_c_buf.shape[0]
+
+        self.prox_c = np.mean(self.prox_c_buf)
 
     def proximity_cr(self, msg):
-        self.prox_cr = normalize(msg.range, 0, MAX)
+        self.prox_cr_buf[self.prox_cr_buf_idx] = normalize(msg.range, 0, MAX)
+        self.prox_cr_buf_idx = (self.prox_cr_buf_idx + 1) % self.prox_cr_buf.shape[0]
+
+        self.prox_cr = np.mean(self.prox_cr_buf)
         # self.get_logger().info("proximity/center_right: received distance {:.2f}".format(self.prox_cr),
         #                        throttle_duration_sec=0.5)
         if self.state == ThymioWallStates.NO_WALL and self.prox_cr > 0.7:
@@ -167,7 +185,10 @@ class ControllerNode(Node):
             self.state = ThymioWallStates.WALL_R
 
     def proximity_r(self, msg):
-        self.prox_r = normalize(msg.range, 0, MAX)
+        self.prox_r_buf[self.prox_r_buf_idx] = normalize(msg.range, 0, MAX)
+        self.prox_r_buf_idx = (self.prox_r_buf_idx + 1) % self.prox_r_buf.shape[0]
+
+        self.prox_r = np.mean(self.prox_r_buf)
         # self.get_logger().info("proximity/right: received distance {:.2f}".format(self.prox_r),
         #                        throttle_duration_sec=0.5)
         if self.state == ThymioWallStates.NO_WALL and self.prox_r > 0.7:
@@ -179,14 +200,14 @@ class ControllerNode(Node):
         # self.get_logger().info("proximity/right_left: received distance {:.2f}".format(msg.range),
         #                        throttle_duration_sec=0.5)
         self.prox_rl_buf[self.prox_rl_buf_idx] = normalize(msg.range, 0, MAX)
-        self.prox_rl_buf_idx = (self.prox_rl_buf_idx + 1) % 3
+        self.prox_rl_buf_idx = (self.prox_rl_buf_idx + 1) % self.prox_rl_buf.shape[0]
         self.prox_rl = np.mean(self.prox_rl_buf)
 
     def proximity_rr(self, msg):
         # self.get_logger().info("proximity/right_right: received distance {:.2f}".format(msg.range),
         #                        throttle_duration_sec=0.5)
         self.prox_rr_buf[self.prox_rr_buf_idx] = normalize(msg.range, 0, MAX)
-        self.prox_rr_buf_idx = (self.prox_rr_buf_idx + 1) % 3
+        self.prox_rr_buf_idx = (self.prox_rr_buf_idx + 1) % self.prox_rr_buf.shape[0]
         self.prox_rr = np.mean(self.prox_rr_buf)
 
     def get_linear_vel(self, goal_dist):
@@ -197,6 +218,9 @@ class ControllerNode(Node):
         # Let's just set some hard-coded velocities in this example
         cmd_vel = Twist()
         # origin = (0., 0.)
+        if self.do_task is None:
+            self.do_task = self.get_parameter('task').get_parameter_value().integer_value
+
         if self.pose2d is None:
             return
 
@@ -209,31 +233,33 @@ class ControllerNode(Node):
         elif self.state == ThymioWallStates.WALL_L:
             # Rotate counterclockwise with constant angular velocity
             cmd_vel.linear.x = 0.0
-            cmd_vel.angular.z = math.pi / 6
+            cmd_vel.angular.z = math.pi / 8
             self.prev_state = ThymioWallStates.WALL_L
             self.state = ThymioWallStates.ROTATE_TO_WALL
         elif self.state == ThymioWallStates.WALL_R:
             # Rotate clockwise with constant angular velocity
             cmd_vel.linear.x = 0.0
-            cmd_vel.angular.z = -math.pi / 6
+            cmd_vel.angular.z = -math.pi / 8
             self.prev_state = ThymioWallStates.WALL_R
             self.state = ThymioWallStates.ROTATE_TO_WALL
         elif self.state == ThymioWallStates.ROTATE_TO_WALL:
-            if self.prev_state == ThymioWallStates.WALL_L and abs(self.prox_cl - self.prox_cr) > 0.1:
+            if self.prev_state == ThymioWallStates.WALL_L and abs(self.prox_cl - self.prox_cr) >= 0.008:
                 cmd_vel.linear.x = 0.0
-                cmd_vel.angular.z = math.pi / 6
-            elif self.prev_state == ThymioWallStates.WALL_R and abs(self.prox_cl - self.prox_cr) > 0.1:
+                cmd_vel.angular.z = math.pi / 25
+            elif self.prev_state == ThymioWallStates.WALL_R and abs(self.prox_cl - self.prox_cr) >= 0.008:
                 cmd_vel.linear.x = 0.0
-                cmd_vel.angular.z = -math.pi / 6
+                cmd_vel.angular.z = -math.pi / 25
             else:
                 self.state = ThymioWallStates.DONE_ROTATE
                 # Done point 2
+                if self.do_task == 2:
+                    self.state = ThymioWallStates.DONE
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = 0.0
         elif self.state == ThymioWallStates.DONE_ROTATE:
             # Beginning point 3
-            if self.prox_cl <= 0.9 and self.prox_cr <= 0.9:
-                cmd_vel.linear.x = 0.02
+            if self.prox_cl <= 0.85 and self.prox_cr <= 0.85:
+                cmd_vel.linear.x = 0.01
                 cmd_vel.angular.z = 0.0
             else:
                 cmd_vel.linear.x = 0.0
@@ -242,10 +268,10 @@ class ControllerNode(Node):
         elif self.state == ThymioWallStates.ROTATE_AWAY:
             if self.prox_rl <= 0.2 and self.prox_rr <= 0.2:
                 cmd_vel.linear.x = 0.0
-                cmd_vel.angular.z = math.pi / 13
-            elif abs(self.prox_rl - self.prox_rr) > 0.012:
+                cmd_vel.angular.z = math.pi / 4
+            elif abs(self.prox_rl - self.prox_rr) >= 0.0058:
                 cmd_vel.linear.x = 0.0
-                cmd_vel.angular.z = math.pi / 13
+                cmd_vel.angular.z = math.pi / 25
             else:
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = 0.0
@@ -254,6 +280,12 @@ class ControllerNode(Node):
         elif self.state == ThymioWallStates.MOVING_AWAY:
             cmd_vel.linear.x = self.get_linear_vel(2)
             cmd_vel.angular.z = 0.0
+            if abs(cmd_vel.linear.x) < 0.005:
+                cmd_vel.linear.x = 0.0
+                self.state = ThymioWallStates.DONE
+        elif self.state == ThymioWallStates.DONE:
+            self.get_logger().info(f'Done task {self.do_task if self.do_task == 2 else "2, 3"}')
+            raise KeyboardInterrupt
 
         # Publish the command
         self.vel_publisher.publish(cmd_vel)

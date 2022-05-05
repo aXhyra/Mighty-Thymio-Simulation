@@ -1,15 +1,13 @@
 import rclpy
 from rclpy.node import Node
 
-from geometry_msgs.msg import Twist, Pose
+from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-import copy
 
 import sys
 import math
-import time
 
-from .states import ThymioStates
+from thymio_simulation.utils.states import ThymioStates
 from .utils import *
 
 

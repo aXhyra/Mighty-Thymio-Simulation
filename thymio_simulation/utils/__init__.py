@@ -1,4 +1,6 @@
 import tf_transformations
+from .states import *
+from .sensors import *
 from math import sqrt, atan2, pi
 
 
@@ -30,3 +32,9 @@ def euclidean_distance(start_pose, current_pose):
 
     return sqrt(pow((start_pose_x - current_pose_x), 2) +
                 pow((start_pose_y - current_pose_y), 2))
+
+
+def normalize(value, min_value, max_value):
+    if value < min_value:
+        return min_value
+    return 1 - ((value - min_value) / (max_value - min_value))

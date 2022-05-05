@@ -1,3 +1,3 @@
 #!/bin/bash
 source ~/dev_ws/install/setup.bash
-ros2 launch thymio_simulation controller_points2_3.launch.py thymio_name:=thymio0
+ros2 launch thymio_simulation bonus.launch.py thymio_name:=thymio_0 thymio1_name:=thymio_1 thymio2_name:=thymio_2 thymio3_name:=thymio_3
