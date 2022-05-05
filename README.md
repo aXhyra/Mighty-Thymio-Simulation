@@ -73,5 +73,6 @@ The launch file for this task is set to handle up to 4 thymios, adding more will
 
 # Other info
 Noise data from thymio's proximity sensors has been handled by using a rolling average of the last 3 measurements.
+Also data from the proximity sensor has been normalized in a range from 0 to 1 and inverted in such a way that the closer the object is, the higher the value of the sensor.
 
 The scripts folder containes scripts to quickly source and run the launch files for each point.

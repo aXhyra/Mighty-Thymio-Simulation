@@ -269,7 +269,7 @@ class ControllerNode(Node):
             if self.prox_rl <= 0.2 and self.prox_rr <= 0.2:
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = math.pi / 4
-            elif abs(self.prox_rl - self.prox_rr) >= 0.0058:
+            elif abs(self.prox_rl - self.prox_rr) >= 0.0057:
                 cmd_vel.linear.x = 0.0
                 cmd_vel.angular.z = math.pi / 25
             else:
