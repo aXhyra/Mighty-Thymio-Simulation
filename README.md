@@ -3,11 +3,10 @@
 ## Robotics, May 2022
 
 # Links to videos and scenes
-## Link to switch drive folder containing the simulation videos
-https://drive.switch.ch/index.php/s/A28TJbkiR2SMahK
 
-## Link to switch drive folder containing the scenes
-https://drive.switch.ch/index.php/s/85PkQwTrLL9wkTV
+* [Simulation videos](https://drive.switch.ch/index.php/s/A28TJbkiR2SMahK)
+* [Coppeliasim Scenes](https://drive.switch.ch/index.php/s/85PkQwTrLL9wkTV)
+
 
 # How to launch Task 1
 To launch the first task:
